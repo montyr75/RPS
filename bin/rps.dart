@@ -15,11 +15,15 @@
  * Add AI entities.
  */
 
+import "dart:math" as Math;
+
 // each move refers to a Map of moves that it can defeat
 final Map<String, Map<String, String>> standard = {
-  "Paper": {"Rock": "covers"},
-  "Rock": {"Scissors": "crushes"},
-  "Scissors": {"Paper": "cuts"}
+  "Paper": {"Rock": "covers", "Spock": "disproves"},
+  "Rock": {"Scissors": "crushes", "Lizard": "crushes"},
+  "Scissors": {"Paper": "cuts", "Lizard": "decapitates"},
+  "Lizard": {"Paper": "eats", "Spock": "poisons"},
+  "Spock": {"Rock": "vaporizes", "Scissors": "melts"}
 };
 
 // each move refers to a Map of moves that it can defeat
@@ -30,9 +34,15 @@ final Map<String, Map<String, String>> fantasy = {
 };
 
 void main() {
-  print(fight("Paper", "Scissors", battleMatrix: standard));
+  List<String> moves = new List<String>()
+    ..addAll(standard.keys);
   
-  print(fight("Knight", "Giant", battleMatrix: fantasy));
+  ChaosBot chaosBot = new ChaosBot(moves);
+  StubbornBot stubbornBot = new StubbornBot(moves);
+  
+  for (int i = 0; i < 10; i++) {
+    print(fight(chaosBot.move(), stubbornBot.move(), battleMatrix: standard));
+  }
 }
 
 String fight(String p1, String p2, {Map<String, Map<String, String>> battleMatrix}) {
@@ -48,9 +58,36 @@ String fight(String p1, String p2, {Map<String, Map<String, String>> battleMatri
     sb.writeln("Player 1 wins! $p1 $defeats $p2.");
   }
   else {
-    defeats = battleMatrix[p2][p1];
-    sb.writeln("Player 2 wins! $p2 $defeats $p1.");
+    if (p1 == p2) {
+      sb.writeln("A tie! Bleh...");
+    }
+    else {
+      defeats = battleMatrix[p2][p1];
+      sb.writeln("Player 2 wins! $p2 $defeats $p1.");
+    }
   }
   
   return sb.toString();
+}
+
+class ChaosBot {
+  List<String> _moves;
+  
+  ChaosBot(List<String> this._moves);
+  
+  String move() {
+    int randomIndex = new Math.Random().nextInt(_moves.length);
+    return _moves[randomIndex];
+  }
+}
+
+class StubbornBot {
+  String _stubbornMove;
+  
+  StubbornBot(List<String> moves) {
+    int randomIndex = new Math.Random().nextInt(moves.length);
+    _stubbornMove = moves[randomIndex];
+  }
+  
+  String move() => _stubbornMove;
 }
