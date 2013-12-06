@@ -1,4 +1,4 @@
 name: RPS
-description: A sample command-line application
+description: A sample command-line application that plays "Rock, Paper, Scissors".
 #dependencies:
 #  unittest: any
