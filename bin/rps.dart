@@ -16,27 +16,27 @@
 import "dart:math" as Math;
 
 // each move refers to a Map of moves that it can defeat
-final Map<String, Map<String, String>> standard = {
-  "Rock": {"Scissors": "crushes", "Lizard": "crushes"},
-  "Paper": {"Rock": "covers", "Spock": "disproves"},
-  "Scissors": {"Paper": "cuts", "Lizard": "decapitates"},
-  "Lizard": {"Paper": "eats", "Spock": "poisons"},
-  "Spock": {"Rock": "vaporizes", "Scissors": "melts"}
+final Map<String, Map<String, String>> standard = const {
+  "Rock": const {"Scissors": "crushes", "Lizard": "crushes"},
+  "Paper": const {"Rock": "covers", "Spock": "disproves"},
+  "Scissors": const {"Paper": "cuts", "Lizard": "decapitates"},
+  "Lizard": const {"Paper": "eats", "Spock": "poisons"},
+  "Spock": const {"Rock": "vaporizes", "Scissors": "melts"}
 };
 
 // each move refers to a Map of moves that it can defeat
-final Map<String, Map<String, String>> fantasy = {
-  "Giant": {"Net": "tears"},
-  "Net": {"Knight": "ensnares"},
-  "Knight": {"Giant": "eviscerates"}
+final Map<String, Map<String, String>> fantasy = const {
+  "Giant": const {"Net": "tears"},
+  "Net": const {"Knight": "ensnares"},
+  "Knight": const {"Giant": "eviscerates"}
 };
 
 void main() {
-  List<String> moves = new List<String>()
+  final List<String> moves = new List<String>()
     ..addAll(standard.keys);
 
-  ChaosBot chaosBot = new ChaosBot(moves);
-  StubbornBot stubbornBot = new StubbornBot(moves);
+  final ChaosBot chaosBot = new ChaosBot(moves);
+  final StubbornBot stubbornBot = new StubbornBot(moves);
 
   for (int i = 0; i < 10; i++) {
     print(fight(chaosBot.move(), stubbornBot.move(), battleMatrix: standard));
@@ -45,7 +45,7 @@ void main() {
 
 String fight(String p1, String p2, {Map<String, Map<String, String>> battleMatrix}) {
   String defeats;
-  StringBuffer sb = new StringBuffer();
+  final StringBuffer sb = new StringBuffer();
 
   sb.writeln("Player 1: $p1");
   sb.writeln("Player 2: $p2");
@@ -69,7 +69,7 @@ String fight(String p1, String p2, {Map<String, Map<String, String>> battleMatri
 }
 
 class ChaosBot {
-  List<String> _moves;
+  final List<String> _moves;
 
   ChaosBot(List<String> this._moves);
 
