@@ -31,16 +31,26 @@ final Map<String, Map<String, String>> fantasy = const {
   "Knight": const {"Giant": "eviscerates"}
 };
 
+int p1WinCount, p2WinCount, tieCount;
+
 void main() {
-  final List<String> moves = new List<String>()
-    ..addAll(standard.keys);
+  p1WinCount = p2WinCount = tieCount = 0;
+  
+  final List<String> moves = standard.keys.toList(growable: false);
 
   final ChaosBot chaosBot = new ChaosBot(moves);
   final StubbornBot stubbornBot = new StubbornBot(moves);
+  final SequenceBot sequenceBot = new SequenceBot(moves);
 
-  for (int i = 0; i < 10; i++) {
-    print(fight(chaosBot.move(), stubbornBot.move(), battleMatrix: standard));
+  for (int i = 0; i < 1000000; i++) {
+    fight(chaosBot.move(), stubbornBot.move(), battleMatrix: standard);
+//    print(fight(chaosBot.move(), sequenceBot.move(), battleMatrix: standard));
   }
+  
+  print("""RESULTS
+P1: $p1WinCount
+P2: $p2WinCount
+T: $tieCount""");
 }
 
 String fight(String p1, String p2, {Map<String, Map<String, String>> battleMatrix}) {
@@ -54,21 +64,28 @@ String fight(String p1, String p2, {Map<String, Map<String, String>> battleMatri
   defeats = battleMatrix[p1][p2];
   if (defeats != null) {
     sb.writeln("Player 1 wins! $p1 $defeats $p2.");
+    p1WinCount++;
   }
   else {
     if (p1 == p2) {
       sb.writeln("A tie! Bleh...");
+      tieCount++;
     }
     else {
       defeats = battleMatrix[p2][p1];
       sb.writeln("Player 2 wins! $p2 $defeats $p1.");
+      p2WinCount++;
     }
   }
 
   return sb.toString();
 }
 
-class ChaosBot {
+abstract class IBot {
+  String move();
+}
+
+class ChaosBot implements IBot {
   final List<String> _moves;
 
   ChaosBot(List<String> this._moves);
@@ -79,7 +96,7 @@ class ChaosBot {
   }
 }
 
-class StubbornBot {
+class StubbornBot implements IBot {
   String _stubbornMove;
 
   StubbornBot(List<String> moves) {
@@ -88,4 +105,22 @@ class StubbornBot {
   }
 
   String move() => _stubbornMove;
+}
+
+class SequenceBot implements IBot {
+  final List<String> _moves;
+  Iterator _iterator;
+
+  SequenceBot(List<String> this._moves) {
+    _iterator = _moves.iterator;
+  }
+
+  String move() {
+    if (!_iterator.moveNext()) {
+      _iterator = _moves.iterator;
+      _iterator.moveNext();
+    }
+    
+    return _iterator.current;
+  }
 }
