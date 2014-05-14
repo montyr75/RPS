@@ -124,3 +124,7 @@ class SequenceBot implements IBot {
     return _iterator.current;
   }
 }
+
+class LearnBot implements IBot {
+  
+}
