@@ -46,7 +46,7 @@ void main() {
   final IBot p1 = chaosBot;
   final IBot p2 = learnBot;
 
-  for (int i = 0; i < 10000; i++) {
+  for (int i = 0; i < 1000; i++) {
     final StringBuffer sb = new StringBuffer();
 
     String p1Move = p1.move();
@@ -55,7 +55,7 @@ void main() {
     sb.writeln("Player 1: $p1Move");
     sb.writeln("Player 2: $p2Move");
 
-    FightResult fightResult = fight(p1Move, p2Move, battleMatrix: standard);
+    final FightResult fightResult = fight(p1Move, p2Move, battleMatrix: standard);
 
     switch (fightResult.winner) {
       case 0: sb.writeln("A tie! Bleh..."); tieCount++; break;
@@ -185,15 +185,16 @@ class LearnBot implements IBot {
       }
     });
 
-//    print("movesLeastUsed: $movesLeastUsed");
-
     // randomly choose which of the least used moves to counter
     String moveToCounter = movesLeastUsed[_random.nextInt(movesLeastUsed.length)];
 
     // get a list of possible counter moves
     final List<String> counterMoves = _battleMatrix[moveToCounter].keys.toList(growable: false);
 
+    // for DEBUG
+//    print("movesLeastUsed: $movesLeastUsed");
 //    print("counterMoves: $counterMoves");
+
 
     // return random counter move
     return counterMoves[_random.nextInt(counterMoves.length)];
