@@ -35,22 +35,26 @@ final Map<String, Map<String, String>> fantasy = const {
   "Knight": const {"Giant": "eviscerates"}
 };
 
-const int ITERATIONS = 10;
+const int ITERATIONS = 10000;
 
 int p1WinCount, p2WinCount, tieCount;
 
 void main() {
+  final Map<String, Map<String, String>> battleMatrix = fantasy;
   p1WinCount = p2WinCount = tieCount = 0;
 
   // for convenience, create one of each bot
-  final ChaosBot chaosBot = new ChaosBot(standard);
-  final StubbornBot stubbornBot = new StubbornBot(standard);
-  final SequenceBot sequenceBot = new SequenceBot(standard);
-  final LearnBot learnBot = new LearnBot(standard);
+  final ChaosBot chaosBot = new ChaosBot(battleMatrix);
+  final ChaosBot chaosBot2 = new ChaosBot(battleMatrix);
+  final StubbornBot stubbornBot = new StubbornBot(battleMatrix);
+  final StubbornBot stubbornBot2 = new StubbornBot(battleMatrix);
+  final SequenceBot sequenceBot = new SequenceBot(battleMatrix);
+  final LearnBot learnBot = new LearnBot(battleMatrix);
+  final LearnBot learnBot2 = new LearnBot(battleMatrix);
 
   // set the two combatants
-  final IBot p1 = chaosBot;
-  final IBot p2 = learnBot;
+  final IBot p1 = learnBot;
+  final IBot p2 = stubbornBot;
 
   for (int i = 0; i < ITERATIONS; i++) {
     final StringBuffer sb = new StringBuffer();
@@ -61,7 +65,7 @@ void main() {
     sb.writeln("${p1.id}: $p1Move");
     sb.writeln("${p2.id}: $p2Move");
 
-    final FightResult fightResult = fight(p1Move, p2Move, battleMatrix: standard);
+    final FightResult fightResult = fight(p1Move, p2Move, battleMatrix: battleMatrix);
 
     switch (fightResult.winner) {
       case 0: sb.writeln("A tie! Bleh..."); tieCount++; break;
@@ -69,10 +73,15 @@ void main() {
       case 2: sb.writeln("${p2.id} wins! $p2Move ${fightResult.defeats} $p1Move."); p2WinCount++; break;
     }
 
-    print(sb.toString());
+//    print(sb.toString());
 
-    // only do this if there is a LearnBot in the fight
-    learnBot.recordOpponentMove(p1Move);
+    // LearnBots need to record their opponent's moves
+    if (p1 is LearnBot) {
+      p1.recordOpponentMove(p2Move);
+    }
+    if (p2 is LearnBot) {
+      p2.recordOpponentMove(p1Move);
+    }
   }
 
   print("""RESULTS

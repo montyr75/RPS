@@ -68,13 +68,10 @@ class LearnBot implements IBot {
   }
 
   String move() {
-    int min = 0;
     final List<String> movesLeastUsed = [];
 
     // find minimum number in _opponentMoves Map
-    if (_opponentMoves.isNotEmpty) {
-      min = _opponentMoves.values.reduce((int value, int element) => Math.min(value, element));
-    }
+    int min = _opponentMoves.values.reduce((int value, int element) => Math.min(value, element));
 
     // find the moves least used by the opponent
     _opponentMoves.forEach((String move, int reps) {
@@ -99,7 +96,6 @@ class LearnBot implements IBot {
   }
 
   void recordOpponentMove(String move) {
-    _opponentMoves.putIfAbsent(move, () => 0);
     _opponentMoves[move]++;
 
 //    print(_opponentMoves);
